@@ -1,7 +1,8 @@
 # WhatsApp Chat Parser
 Converts .txt file to .csv file
 
-This is an on-going, so the code is not final **YET!**
+This is an on-going project, so the code is not final **YET!**
+Hence, must be work for iOS and Android patterns.
 
 Constraints:
 - Only tried on iOS file with a pattern without AM/PM
