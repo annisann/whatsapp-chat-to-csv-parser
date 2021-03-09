@@ -5,6 +5,7 @@ Converts .txt file to .csv file
 Due to some limitations, please check the code before you start parsing. All limitations and patterns used are listed below.
 
 ### Patterns List
+------------------
 This is patterns I've known. Stil, I don't have pattern 4 on my dataset.
 
 <table>
@@ -36,8 +37,8 @@ This is patterns I've known. Stil, I don't have pattern 4 on my dataset.
    </tbody>
 </table>
 
-
 ### Limitations
+---------------
 - Tried on iOS file with pattern 1 without AM/PM.
 - Tried on Android file with pattern 2 with AM/PM.
 - Tried on Android file with pattern 3.
