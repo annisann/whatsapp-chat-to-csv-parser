@@ -3,21 +3,27 @@ import pandas as pd
 import os
 import sys
 
-def get_date(message):
-    """ This function is to get the date ONLY, doesn't include the time.
+pattern1 = r'\[(\d{1,2})\/(\d{1,2})\/(\d{1,2}) (\d{1,2})\.(\d{1,2})\.(\d{1,2})?( AM|PM)?\]'
+pattern2 = r'(\d{1,2})\/(\d{1,2})\/(\d{0,2})\, (\d{0,2}):(\d{1,2})( [A|P]M)? -'
+pattern3 = r'(\d{1,2})\/(\d{1,2})\/(\d{1,2}) (\d{1,2})\.(\d{1,2})'
+pattern4 = r'(\d{1,2})\/(\d{1,2})\/(\d{1,4}) (\d{1,2})\.(\d{1,2})'
+
+"""    
+    Explanation:
+    pattern1 [DD/MM/YY HH.MM.SS] Sender: Messages
+              [DD/MM/YY HH.MM.SS AM/PM] Sender: Messages
+    pattern2 MM/DD/YY, HH:MM - Sender: Messages
+             MM/DD/YY, HH:MM AM/PM - Sender: Messages
+    pattern3 DD/MM/YY HH.MM - Sender: Messages
+    pattern4 DD/MM/YYYY HH.MM - Sender: Messages           # haven't met this pattern tho
     
-        Explanation:
-        pattern1: [dd/MM/YY HH.MM.SS] Sender: Messages
-                  [dd/MM/YY HH.MM.SS AM/PM] Sender: Messages
-        pattern2: MM/dd/YY, HH:MM - Sender: Messages
-                  MM/dd/YY, HH:MM AM/PM - Sender: Messages
-        pattern3: dd/MM/YY HH.MM - Sender: Messages
-        pattern4: dd/MM/YYYY HH.MM - Sender: Messages            # haven't met this pattern
+    NOTE    
+    pattern1 is iOS format, and the rest is android.
+"""
+
+def get_date(message):
+    """ This function is to get the date ONLY to DDMMYY format and doesn't include the time.
     """
-    pattern1 = r'\[(\d{1,2})\/(\d{1,2})\/(\d{1,2}) (\d{1,2})\.(\d{1,2})\.(\d{1,2})?( AM|PM)?\]'
-    pattern2 = r'(\d{1,2})\/(\d{1,2})\/(\d{0,2})\, (\d{0,2}):(\d{1,2})( [A|P]M)? -'
-    pattern3 = r'(\d{1,2})\/(\d{1,2})\/(\d{1,2}) (\d{1,2})\.(\d{1,2})'
-    pattern4 = r'(\d{1,2})\/(\d{1,2})\/(\d{1,4}) (\d{1,2})\.(\d{1,2})'
     
     result1 = re.findall(pattern1, message)
     result2 = re.findall(pattern2, message)
@@ -40,7 +46,7 @@ def get_date(message):
     else:
         print("No pattern detected.")
     return date
-    
+
 def get_sender(message):
     """ This function is to get the sender from messages.
     
@@ -51,17 +57,18 @@ def get_sender(message):
     patternNa = r'[\]|\-] ?([\w\.].*):'
 
     resultNo = re.findall(patternNo, message)
-    resultNa = re.findall(patternNa, message)
+    resultNa = re.findall(patternNa, message, re.M)
     
     if resultNo:
         return resultNo
     elif resultNa:
         return resultNa
-
+    else:
+        return "No match, sorry."
+    
 def get_messages(message):
     """ This function is to get the messages!
-        iOS and Android type is different.
-    
+        Since iOS and Android type is different, please refer to patterns I mentioned above.
     """
     pattern = r': ([\d\w\s\W][^\[\]]+)' # messages pattern for iOS
     
@@ -88,14 +95,21 @@ def get_messages(message):
         message = re.findall(pattern, message)
     
     # Android
-    else:
+    elif re.match(pattern2, message):
         message = message.replace('\n', '')
         message = "".join(re.split('\\n?\d{1,2}\/\d{1,2}\/\d{1,2}, ', message))
         message = re.split(r'\d{1,2}:\d{1,2} [A|P]M - [\w\s]+: ', message)
-        if '' in message:
-            message.remove('') 
-    return message
+            
+    elif re.match(pattern3, message):
+        message = message.replace('\n', ' ')
+        message = "".join(re.split('\\n?\d{1,2}\/\d{1,2}\/\d{1,2} ', message))
+        message = re.split(r'\d{1,2}\.\d{1,2} - [\w\s]+: ', message)
     
+    if '' in message:
+            message.remove('')
+            
+    return message
+
 def create_df(message):
     """ Aggregate date, sender, and messages then create a Data Frame """
     date = get_date(message)
@@ -105,8 +119,11 @@ def create_df(message):
             list(zip(date, sender, messages)),
             columns=['timestamp', 'sender', 'messages']
         )
-    return df
- 
+    if 'Messages' in df.messages[0]:
+        return df[1:] # for iOS
+    else:
+        return df # for android, delete the first chat
+    
 def convert_to_csv(dataframe, messages):
     """ This function is to convert .txt files to .csv files.
         All files stored in dataset_csv/
@@ -116,9 +133,9 @@ def convert_to_csv(dataframe, messages):
     if not os.path.exists(path):
         os.mkdir(path)
     
-    file = 'dataset_csv/' + messages.replace('.txt', '.csv')
+    file = path + messages.replace('.txt', '.csv')
     dataframe.to_csv(file, index=False)
- 
+
 def main():
     files = os.listdir(os.getcwd()+'/dataset')
     messages_list = [file for file in files if file.endswith('.txt')]
@@ -130,4 +147,4 @@ def main():
             df = create_df(message)
             convert_to_csv(df, messages)
 
-main()    
+main()
