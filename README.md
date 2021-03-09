@@ -4,16 +4,40 @@ Converts .txt file to .csv file
 ***IMPORTANT NOTE***\
 Due to some limitations, please check the code before you start parsing. All limitations and patterns used are listed below.
 
-#### Patterns List
+### Patterns List
 This is patterns I've known. Stil, I don't have pattern 4 on my dataset.
-Name      | Pattern
-|:---: | :---:
-pattern 1 | [DD/MM/YY HH.MM.SS] Sender: Messages<br> [DD/MM/YY HH.MM.SS AM/PM] Sender: Messages
-pattern 2 | MM/DD/YY, HH:MM - Sender: Messages<br> MM/DD/YY, HH:MM AM/PM - Sender: Messages
-pattern 3 | DD/MM/YY HH.MM - Sender: Messages
-pattern 4 | DD/MM/YYYY HH.MM - Sender: Messages
 
-#### Limitations
+<table>
+   <thead>
+      <tr>
+         <th align='center'>Name</th>
+         <th align='center'>Pattern</th>
+      </tr>
+   </thead>
+   <tbody>
+      <tr>
+         <td align='center'> pattern 1 </td>
+         <td align='left'> [DD/MM/YY hh.mm.ss] Sender: Messages <br>
+                           [DD/MM/YY hh.mm.ss AM/PM] Sender: Messages </td>
+      </tr>
+      <tr>
+         <td align='center'> pattern 2 </td>
+         <td align='left'> MM/DD/YY, hh.mm - Sender: Messages <br>
+                           MM/DD/YY, hh:mm AM/PM - Sender: Messages </td>
+      </tr>
+      <tr>
+         <td align='center'> pattern 3 </td>
+         <td align='left'> DD/MM/YY hh.mm - Sender: Messages </td>
+      </tr>
+           <tr>
+         <td align='center'> pattern 4 </td>
+         <td align='left'> DD/MM/YYYY hh.mm - Sender: Messages </td>
+      </tr>
+   </tbody>
+</table>
+
+
+### Limitations
 - Tried on iOS file with pattern 1 without AM/PM.
 - Tried on Android file with pattern 2 with AM/PM.
 - Tried on Android file with pattern 3.
