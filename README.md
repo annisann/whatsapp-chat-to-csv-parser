@@ -8,9 +8,9 @@ Due to some limitations, please check the code before you start parsing. All lim
 This is patterns I've known. Stil, I don't have pattern 4 on my dataset.
 Name      | Pattern
 |:---: | :---
-pattern 1 | [DD/MM/YY HH.MM.SS] Sender: Messages\
+pattern 1 | [DD/MM/YY HH.MM.SS] Sender: Messages
           | [DD/MM/YY HH.MM.SS AM/PM] Sender: Messages
-pattern 2 | MM/DD/YY, HH:MM - Sender: Messages\
+pattern 2 | MM/DD/YY, HH:MM - Sender: Messages
           | MM/DD/YY, HH:MM AM/PM - Sender: Messages
 pattern 3 | DD/MM/YY HH.MM - Sender: Messages
 pattern 4 | DD/MM/YYYY HH.MM - Sender: Messages
