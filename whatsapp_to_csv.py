@@ -119,7 +119,7 @@ def create_df(message):
             list(zip(date, sender, messages)),
             columns=['timestamp', 'sender', 'messages']
         )
-    if 'Messages' in df.messages[0]:
+    if 'Messages' or 'Pesan' in df.messages[0]:
         return df[1:] # for iOS
     else:
         return df # for android, delete the first chat
